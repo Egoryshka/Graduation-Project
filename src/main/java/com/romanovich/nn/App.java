@@ -1,37 +1,37 @@
 package com.romanovich.nn;
 
 
-import com.romanovich.nn.layer.Layer;
-import com.romanovich.nn.layer.neuron.Neuron;
+import com.romanovich.nn.network.NetworkContext;
 import com.romanovich.nn.network.NeuralNetwork;
 import com.romanovich.nn.training.error.ErrorFunctionType;
 import com.romanovich.nn.training.scenario.ScenarioService;
 import com.romanovich.nn.training.scenario.TrainingSet;
+import com.romanovich.nn.training.strategy.TrainerType;
+import com.romanovich.nn.training.strategy.TrainingStrategy;
 import com.romanovich.nn.training.strategy.genetic.GeneticAlgorithm;
 import com.romanovich.nn.training.strategy.genetic.operations.MutationType;
 import com.romanovich.nn.training.strategy.genetic.operations.SelectionType;
 import com.romanovich.nn.training.strategy.propagation.BackPropagation;
-import com.romanovich.nn.training.strategy.TrainingStrategy;
+//import com.romanovich.nn.ui.UserInterface;
 import com.romanovich.nn.utils.ImgResolution;
 import com.romanovich.nn.utils.converter.ImageDataConverter;
-import com.romanovich.nn.utils.converter.ImageNumberConverter;
+//import javafx.application.Application;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Random;
 import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) throws IOException {
-        backPropagationDemo();
+//        Application.launch(UserInterface.class);
+//        backPropagationDemo();
 //        geneticDemo();
     }
 
     private static void geneticDemo() {
         NetworkContext context = NetworkContext.buildGeneticContext(ImgResolution.W9_H12, 10, new int[]{},
-                0.7, ErrorFunctionType.EUCLID_ERROR, 40, 100000, 0.05d,
+                0.7, ErrorFunctionType.EUCLID_ERROR, TrainerType.GENETIC, 40, 100000, 0.05d,
                 SelectionType.BEST_PART, 10, 0.01d, 10,
                 MutationType.GAUSS_MUTATION);
         NeuralNetwork network = new NeuralNetwork(context.getResolution().getImageSize(),
@@ -53,7 +53,7 @@ public class App {
 
     private static void backPropagationDemo() {
         NetworkContext context = NetworkContext.buildBackPropagationContext(ImgResolution.W9_H12, 10, new int[]{},
-                0.8, ErrorFunctionType.EUCLID_ERROR, 40, 0.4, 0.2);
+                0.8, ErrorFunctionType.EUCLID_ERROR, TrainerType.BACK_PROPAGATION, 40, 0.4, 0.2);
         NeuralNetwork network = new NeuralNetwork(context.getResolution().getImageSize(),
                 context.getOutputCount(), context.getHiddenLayers(), context.getActivationParam());
         TrainingStrategy trainer = new BackPropagation();

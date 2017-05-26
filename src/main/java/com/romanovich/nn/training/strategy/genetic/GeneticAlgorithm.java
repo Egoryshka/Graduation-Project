@@ -1,6 +1,6 @@
 package com.romanovich.nn.training.strategy.genetic;
 
-import com.romanovich.nn.NetworkContext;
+import com.romanovich.nn.network.NetworkContext;
 import com.romanovich.nn.network.NeuralNetwork;
 import com.romanovich.nn.training.error.ErrorFunction;
 import com.romanovich.nn.training.scenario.TrainingEntry;
@@ -19,11 +19,12 @@ import java.util.Random;
 public class GeneticAlgorithm implements TrainingStrategy {
 
     @Override
-    public void train(NeuralNetwork network, NetworkContext context, TrainingSet trainData) {
+    public String train(NeuralNetwork network, NetworkContext context, TrainingSet trainData) {
         Random random = new Random(System.currentTimeMillis());
         int trainingDataSize = trainData.getExamples().size();
         int chromosomeSize = getChromosomeSize(network);
         List<Chromosome> population = initPopulation(context.getPopulationSize(), chromosomeSize, random);
+        StringBuilder result = new StringBuilder();
         for (int index = 0; index < context.getIterations(); index++) {
             for (TrainingEntry entry : trainData.getExamples()) {
                 population = trainPattern(network, context, entry, population, random);
@@ -32,11 +33,13 @@ public class GeneticAlgorithm implements TrainingStrategy {
             calculateFitness(population, network, context, entry);
             population.sort(new Chromosome.ChromosomeComparator());
             System.out.println("Iteration = " + (index + 1) + "; Network error = " + population.get(0).getError());
+            result.append("Generation = ").append(index + 1).append("; Network error = ").append(population.get(0).getError()).append("\\n");
             if (context.getTerminationError() > population.get(0).getError()) {
                 break;
             }
         }
         network.setSynapses(population.get(0).getGenes());
+        return result.toString();
     }
 
     private List<Chromosome> trainPattern(NeuralNetwork network, NetworkContext context, TrainingEntry entry,
