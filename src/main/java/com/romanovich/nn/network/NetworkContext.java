@@ -1,8 +1,9 @@
-package com.romanovich.nn;
+package com.romanovich.nn.network;
 
 import com.romanovich.nn.training.error.ErrorFunction;
 import com.romanovich.nn.training.error.ErrorFunctionFactory;
 import com.romanovich.nn.training.error.ErrorFunctionType;
+import com.romanovich.nn.training.strategy.TrainerType;
 import com.romanovich.nn.training.strategy.genetic.operations.MutationType;
 import com.romanovich.nn.training.strategy.genetic.operations.OperatorFactory;
 import com.romanovich.nn.training.strategy.genetic.operations.SelectionType;
@@ -26,6 +27,7 @@ public class NetworkContext {
     private DataConverter converter;
 
     //Training params
+    private TrainerType trainerType;
     private ErrorFunction errorFunction;
 
     //Back Propagation
@@ -46,9 +48,10 @@ public class NetworkContext {
     }
 
     public static NetworkContext buildBackPropagationContext(ImgResolution resolution, int outputCount, int[] hiddenLayers,
-                                                      double activationParam, ErrorFunctionType errorFunctionType,
-                                                      int eras, double trainingRate, double regularization) {
+                                                             double activationParam, ErrorFunctionType errorFunctionType,
+                                                             TrainerType trainerType, int eras, double trainingRate, double regularization) {
         NetworkContext context = setNetworkParams(resolution, outputCount, hiddenLayers, activationParam);
+        context.trainerType = trainerType;
         context.errorFunction = ErrorFunctionFactory.getErrorFunctionFunction(errorFunctionType);
         context.eras = eras;
         context.trainingRate = trainingRate;
@@ -57,11 +60,12 @@ public class NetworkContext {
     }
 
     public static NetworkContext buildGeneticContext(ImgResolution resolution, int outputCount, int[] hiddenLayers,
-                                              double activationParam, ErrorFunctionType errorFunctionType,
-                                              int populationSize, int iterations, double terminationError,
-                                              SelectionType selectionType, int crossoverPointCount,
-                                              double mutationProbability, int mutationsCount, MutationType mutationType) {
+                                                     double activationParam, ErrorFunctionType errorFunctionType,
+                                                     TrainerType trainerType, int populationSize, int iterations,
+                                                     double terminationError, SelectionType selectionType, int crossoverPointCount,
+                                                     double mutationProbability, int mutationsCount, MutationType mutationType) {
         NetworkContext context = setNetworkParams(resolution, outputCount, hiddenLayers, activationParam);
+        context.trainerType = trainerType;
         context.errorFunction = ErrorFunctionFactory.getErrorFunctionFunction(errorFunctionType);
         context.populationSize = populationSize;
         context.iterations = iterations;
@@ -90,6 +94,10 @@ public class NetworkContext {
 
     public DataConverter getConverter() {
         return converter;
+    }
+
+    public TrainerType getTrainerType() {
+        return trainerType;
     }
 
     public ErrorFunction getErrorFunction() {
@@ -133,7 +141,7 @@ public class NetworkContext {
     }
 
     private static NetworkContext setNetworkParams(ImgResolution resolution, int outputCount, int[] hiddenLayers,
-                                            double activationParam) {
+                                                   double activationParam) {
         NetworkContext context = new NetworkContext();
         context.resolution = resolution;
         context.outputCount = outputCount;

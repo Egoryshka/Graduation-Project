@@ -2,6 +2,8 @@ package com.romanovich.nn.layer.neuron;
 
 import com.romanovich.nn.layer.neuron.activation.ActivationFunction;
 
+import java.util.Random;
+
 /**
  * @author romanovich
  * @since 15.05.2017
@@ -58,7 +60,7 @@ public class NeuronImpl implements Neuron {
     }
 
     /**
-     * Initializes synaptic weights with random values in range [0, 1)
+     * Initializes synaptic weights with random gaussian values.
      * on neuron creation.
      *
      * @param inputSize input vector size.
@@ -66,7 +68,7 @@ public class NeuronImpl implements Neuron {
     private void initNeuron(int inputSize) {
         this.synapses = new double[inputSize];
         for (int i = 0; i < inputSize; i++) {
-            this.synapses[i] = Math.random();
+            this.synapses[i] = new Random(System.currentTimeMillis()).nextGaussian();
         }
     }
 

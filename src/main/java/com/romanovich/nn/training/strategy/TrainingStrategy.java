@@ -1,6 +1,6 @@
 package com.romanovich.nn.training.strategy;
 
-import com.romanovich.nn.NetworkContext;
+import com.romanovich.nn.network.NetworkContext;
 import com.romanovich.nn.network.NeuralNetwork;
 import com.romanovich.nn.training.scenario.TrainingSet;
 
@@ -10,5 +10,5 @@ import com.romanovich.nn.training.scenario.TrainingSet;
  */
 public interface TrainingStrategy {
 
-    void train(NeuralNetwork network, NetworkContext context, TrainingSet trainData);
+    String train(NeuralNetwork network, NetworkContext context, TrainingSet trainData);
 }
