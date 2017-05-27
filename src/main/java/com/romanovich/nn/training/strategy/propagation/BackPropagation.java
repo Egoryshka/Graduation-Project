@@ -24,7 +24,7 @@ public class BackPropagation implements TrainingStrategy {
                 error += trainPattern(network, context, entry, scenarioSize);
             }
             System.out.println("Epoch = " + (i + 1) + "; Network error = " + error / scenarioSize);
-            result.append("Epoch = ").append(i + 1).append("; Network error = ").append(error / scenarioSize).append("\\n");
+            result.append("Epoch = ").append(i + 1).append("; Network error = ").append(error / scenarioSize).append("\n");
 
         }
         return result.toString();

@@ -33,7 +33,7 @@ public class GeneticAlgorithm implements TrainingStrategy {
             calculateFitness(population, network, context, entry);
             population.sort(new Chromosome.ChromosomeComparator());
             System.out.println("Iteration = " + (index + 1) + "; Network error = " + population.get(0).getError());
-            result.append("Generation = ").append(index + 1).append("; Network error = ").append(population.get(0).getError()).append("\\n");
+            result.append("Generation = ").append(index + 1).append("; Network error = ").append(population.get(0).getError()).append("\n");
             if (context.getTerminationError() > population.get(0).getError()) {
                 break;
             }
@@ -43,7 +43,7 @@ public class GeneticAlgorithm implements TrainingStrategy {
     }
 
     private List<Chromosome> trainPattern(NeuralNetwork network, NetworkContext context, TrainingEntry entry,
-                              List<Chromosome> population, Random random) {
+                                          List<Chromosome> population, Random random) {
         calculateFitness(population, network, context, entry);
         int parentsCount = population.size() / 2;
         List<Chromosome> survived = context.getSelector().select(population, parentsCount, random);
@@ -68,7 +68,7 @@ public class GeneticAlgorithm implements TrainingStrategy {
         while (populationSize > index++) {
             double[] genes = new double[chromosomeSize];
             for (int i = 0; i < chromosomeSize; i++) {
-                genes[i] = random.nextDouble() * 0.3;
+                genes[i] = random.nextGaussian();
             }
             population.add(new Chromosome(genes));
         }
