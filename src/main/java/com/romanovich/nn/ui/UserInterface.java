@@ -275,7 +275,7 @@ public class UserInterface extends Application {
             generationsField = new TextField("40");
             selectionField = ComponentFactory.getComboBox(SelectionType.getSelections(), SelectionType.ROULETTE_WHEEL.getSelection());
             crossoverCount = new TextField("4");
-            mutationField = ComponentFactory.getComboBox(MutationType.getMutations(), MutationType.GAUSS_MUTATION.getMutation());
+            mutationField = ComponentFactory.getComboBox(MutationType.getMutations(), MutationType.RANDOM_MUTATION.getMutation());
             mutationProb = new TextField("0.04");
             mutationCount = new TextField("5");
 

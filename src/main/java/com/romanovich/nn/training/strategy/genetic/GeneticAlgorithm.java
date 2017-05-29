@@ -21,36 +21,29 @@ public class GeneticAlgorithm implements TrainingStrategy {
     @Override
     public String train(NeuralNetwork network, NetworkContext context, TrainingSet trainData) {
         Random random = new Random(System.currentTimeMillis());
-        int trainingDataSize = trainData.getExamples().size();
         int chromosomeSize = getChromosomeSize(network);
         List<Chromosome> population = initPopulation(context.getPopulationSize(), chromosomeSize, random);
+        int parentsCount = population.size() / 2;
+
+        calculateFitness(population, network, context, trainData);
         StringBuilder result = new StringBuilder();
-        for (int index = 0; index < context.getIterations(); index++) {
-            for (TrainingEntry entry : trainData.getExamples()) {
-                population = trainPattern(network, context, entry, population, random);
-            }
-            TrainingEntry entry = trainData.getExamples().get(random.nextInt(trainingDataSize));
-            calculateFitness(population, network, context, entry);
+        for (int generation = 0; generation < context.getIterations(); generation++) {
+            List<Chromosome> parent = context.getSelector().select(population, parentsCount, random);
+            population.addAll(Crossover.apply(parent, context.getCrossoverPointCount(), random));
+            context.getMutator().apply(population, random);
+
+            calculateFitness(population, network, context, trainData);
             population.sort(new Chromosome.ChromosomeComparator());
-            System.out.println("Iteration = " + (index + 1) + "; Network error = " + population.get(0).getError());
-            result.append("Generation = ").append(index + 1).append("; Network error = ").append(population.get(0).getError()).append("\n");
+            population = population.subList(0, context.getPopulationSize() - 1);
+
+            System.out.println("Generation = " + (generation + 1) + "; Network error = " + population.get(0).getError());
+            result.append("Generation = ").append(generation + 1).append("; Network error = ").append(population.get(0).getError()).append("\n");
             if (context.getTerminationError() > population.get(0).getError()) {
                 break;
             }
         }
         network.setSynapses(population.get(0).getGenes());
         return result.toString();
-    }
-
-    private List<Chromosome> trainPattern(NeuralNetwork network, NetworkContext context, TrainingEntry entry,
-                                          List<Chromosome> population, Random random) {
-        calculateFitness(population, network, context, entry);
-        int parentsCount = population.size() / 2;
-        List<Chromosome> survived = context.getSelector().select(population, parentsCount, random);
-        List<Chromosome> newGeneration = Crossover.apply(survived, context.getCrossoverPointCount(), random);
-        context.getMutator().apply(newGeneration, random);
-        newGeneration.addAll(survived);
-        return newGeneration;
     }
 
     private int getChromosomeSize(NeuralNetwork network) {
@@ -66,23 +59,25 @@ public class GeneticAlgorithm implements TrainingStrategy {
         int index = 0;
         List<Chromosome> population = new ArrayList<>();
         while (populationSize > index++) {
-            double[] genes = new double[chromosomeSize];
-            for (int i = 0; i < chromosomeSize; i++) {
-                genes[i] = random.nextGaussian();
-            }
+            double[] genes = random.doubles(chromosomeSize, -1.1, 1.1).toArray();
             population.add(new Chromosome(genes));
         }
         return population;
     }
 
     private void calculateFitness(List<Chromosome> population, NeuralNetwork network,
-                                  NetworkContext context, TrainingEntry entry) {
+                                            NetworkContext context, TrainingSet set) {
         ErrorFunction errorFunction = context.getErrorFunction();
+        int trainingSetSize = set.getExamples().size();
         for (Chromosome chromosome : population) {
             if (chromosome.getError() == Double.POSITIVE_INFINITY) {
+                double errorSum = 0;
                 network.setSynapses(chromosome.getGenes());
-                double[] actual = network.proceed(entry.getInput());
-                chromosome.setError(errorFunction.calcError(entry.getExpected(), actual));
+                for (TrainingEntry entry : set.getExamples()) {
+                    double[] actual = network.proceed(entry.getInput());
+                    errorSum += errorFunction.calcError(entry.getExpected(), actual);
+                }
+                chromosome.setError(errorSum / trainingSetSize);
             }
         }
     }

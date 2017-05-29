@@ -37,10 +37,10 @@ public class Chromosome {
 
         @Override
         public int compare(Chromosome o1, Chromosome o2) {
-            if (o2.getError() >= o1.getError()) {
+            if (o1.getError() >= o2.getError()) {
                 return 1;
             } else {
-                return 0;
+                return -1;
             }
         }
     }

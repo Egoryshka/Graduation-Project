@@ -2,7 +2,7 @@ package com.romanovich.nn.training.strategy.genetic.operations;
 
 import com.romanovich.nn.training.strategy.genetic.operations.mutation.ExchangeMutator;
 import com.romanovich.nn.training.strategy.genetic.operations.mutation.Mutator;
-import com.romanovich.nn.training.strategy.genetic.operations.mutation.GaussMutator;
+import com.romanovich.nn.training.strategy.genetic.operations.mutation.RandomMutator;
 import com.romanovich.nn.training.strategy.genetic.operations.selection.BetsPartSelection;
 import com.romanovich.nn.training.strategy.genetic.operations.selection.RouletteWheelSelection;
 import com.romanovich.nn.training.strategy.genetic.operations.selection.SelectionStrategy;
@@ -34,9 +34,9 @@ public final class OperatorFactory {
         switch (mutationType) {
             case EXCHANGE_MUTATION:
                 return new ExchangeMutator(mutationProbability, mutationCount);
-            case GAUSS_MUTATION:
+            case RANDOM_MUTATION:
             default:
-                return new GaussMutator(mutationProbability, mutationCount);
+                return new RandomMutator(mutationProbability, mutationCount);
         }
     }
 }

@@ -64,7 +64,7 @@ public class NeuralNetwork {
         return result;
     }
 
-    private void initLayers(int inputVectorSize,int outputVectorSize, int[] hiddenLayers, double logistic) {
+    private void initLayers(int inputVectorSize, int outputVectorSize, int[] hiddenLayers, double logistic) {
         int[] layersDefinition = getLayersDefinition(inputVectorSize, outputVectorSize, hiddenLayers);
         this.network = new ArrayList<>();
         for (int i = 1; i < layersDefinition.length; i++) {

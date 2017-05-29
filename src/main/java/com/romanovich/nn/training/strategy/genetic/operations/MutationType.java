@@ -11,7 +11,7 @@ import java.util.List;
  */
 public enum MutationType {
     EXCHANGE_MUTATION("Gens exchange mutation"),
-    GAUSS_MUTATION("Gauss number mutation");
+    RANDOM_MUTATION("Random number mutation");
 
     private String mutation;
 
@@ -37,6 +37,6 @@ public enum MutationType {
                 return type;
             }
         }
-        return MutationType.GAUSS_MUTATION;
+        return MutationType.RANDOM_MUTATION;
     }
 }
